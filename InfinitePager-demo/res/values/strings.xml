@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Infinite Pager Demo</string>
+    
+    <string name="action_show_extras">Show Extra Fragments</string>
+    <string name="action_hide_extras">Hide Extra Fragments</string>
+
+</resources>

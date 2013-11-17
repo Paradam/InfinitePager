@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_show_extras"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_show_extras"/>
+    
+    <item
+        android:id="@+id/action_hide_extras"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_hide_extras"/>
+
+</menu>
