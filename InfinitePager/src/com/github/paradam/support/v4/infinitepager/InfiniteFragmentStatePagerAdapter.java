@@ -169,7 +169,6 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 	 */
 	public void destroyRelativeItem(ViewGroup container, int position, Object object) {
 		Fragment fragment = (Fragment)object;
-
 		if (mCurTransaction == null) {
 			mCurTransaction = mFragmentManager.beginTransaction();
 		}
@@ -185,7 +184,6 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 			mSavedState.set(position, null);
 		}
 		mFragments.set(position, null);
-
 		mCurTransaction.remove(fragment);
 	}
 	
@@ -226,8 +224,7 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 	
 	@Override
 	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		
+		onPreNotifyDataSetChange();
 		final int count = getRelativeCount();
 		final int margin = getMargin();
 		
@@ -271,6 +268,8 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		
 		mSavedState = newSavedState;
 		mFragments = newFragments;
+		
+		super.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -305,8 +304,8 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 			mSavedState.clear();
 			mFragments.clear();
 			if (fss != null) {
-				for (int i=0; i<fss.length; i++) {
-					mSavedState.add((Fragment.SavedState)fss[i]);
+				for (Parcelable ss : fss) {
+					mSavedState.add((Fragment.SavedState)ss);
 				}
 			}
 			Iterable<String> keys = bundle.keySet();
@@ -322,11 +321,11 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 							mFragments.add(null);
 						}
 						f.setMenuVisibility(false);
+						f.setUserVisibleHint(false);
 						mFragments.set(index, f);
 					} else {
 						Log.w(TAG, "Bad fragment at key " + key);
 					}
-					
 				}
 			}
 		}
@@ -375,6 +374,8 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		} else if (relativeObjectPosition != POSITION_NONE) {
 			// The items position has changed, return the new position
 			returnedPosition = relativeObjectPosition + getMargin();
+			
+			
 		}
 		return returnedPosition;
 	}

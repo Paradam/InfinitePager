@@ -109,7 +109,17 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 	 */
 	public abstract Fragment getRelativeItem(int position);
 	
-	@Override
+	/**
+	 * Create the page for the given position.  The adapter is responsible
+	 * for adding the view to the container given here, although it only
+	 * must ensure this is done by the time it returns from
+	 * {@link #finishUpdate(ViewGroup)}.
+	 *
+	 * @param container The containing View in which the page will be shown.
+	 * @param position The page position to be instantiated.
+	 * @return Returns an Object representing the new page.  This does not
+	 * need to be a View, but can be some other container of the page.
+	 */
 	public Object instantiateRelativeItem(ViewGroup container, int position) {
 		// If we already have this item instantiated, there is nothing
 		// to do. This can happen when we are restoring the entire pager
@@ -131,7 +141,7 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		if(f.getView() != null) {
 			mCurTransaction.remove(f);
 		}
-
+		
 		if (mSavedState.size() > position) {
 			Fragment.SavedState fss = mSavedState.get(position);
 			if (fss != null && !f.isAdded()) {
@@ -143,6 +153,7 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		while (mFragments.size() <= position) {
 			mFragments.add(null);
 		}
+		
 		FragmentCompat.setMenuVisibility(f, false);
 		FragmentCompat.setUserVisibleHint(f, false);
 		mFragments.set(position, f);
@@ -151,10 +162,18 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		return f;
 	}
 	
-	@Override
+	/**
+	 * Remove a page for the given position.  The adapter is responsible
+	 * for removing the view from its container, although it only must ensure
+	 * this is done by the time it returns from {@link #finishUpdate(ViewGroup)}.
+	 *
+	 * @param container The containing View from which the page will be removed.
+	 * @param position The page position to be removed.
+	 * @param object The same object that was returned by
+	 * {@link #instantiateItem(View, int)}.
+	 */
 	public void destroyRelativeItem(ViewGroup container, int position, Object object) {
 		Fragment fragment = (Fragment)object;
-
 		if (mCurTransaction == null) {
 			mCurTransaction = mFragmentManager.beginTransaction();
 		}
@@ -164,13 +183,24 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 				mFragments.add(null);
 			}
 		}
-		mSavedState.set(position, mFragmentManager.saveFragmentInstanceState(fragment));
+		if (fragment != null && fragment.isAdded()) {
+			mSavedState.set(position, mFragmentManager.saveFragmentInstanceState(fragment));
+		} else {
+			mSavedState.set(position, null);
+		}
 		mFragments.set(position, null);
-
 		mCurTransaction.remove(fragment);
 	}
-
-	@Override
+	
+	/**
+	 * Called to inform the adapter of which item is currently considered to
+	 * be the "primary", that is the one show to the user as the current page.
+	 *
+	 * @param container The containing View from which the page will be removed.
+	 * @param position The page position that is now the primary.
+	 * @param object The same object that was returned by
+	 * {@link #instantiateItem(View, int)}.
+	 */
 	public void setRelativePrimaryItem(ViewGroup container, int position, Object object) {
 		if (mCurrentPrimaryItem != null) {
 			FragmentCompat.setMenuVisibility(mCurrentPrimaryItem, false);
@@ -199,8 +229,7 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 	
 	@Override
 	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		
+		onPreNotifyDataSetChange();
 		final int count = getRelativeCount();
 		final int margin = getMargin();
 		
@@ -244,6 +273,8 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		
 		mSavedState = newSavedState;
 		mFragments = newFragments;
+		
+		super.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -278,8 +309,8 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 			mSavedState.clear();
 			mFragments.clear();
 			if (fss != null) {
-				for (int i=0; i<fss.length; i++) {
-					mSavedState.add((Fragment.SavedState)fss[i]);
+				for (Parcelable ss : fss) {
+					mSavedState.add((Fragment.SavedState)ss);
 				}
 			}
 			Iterable<String> keys = bundle.keySet();
@@ -295,11 +326,11 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 							mFragments.add(null);
 						}
 						FragmentCompat.setMenuVisibility(f, false);
+						FragmentCompat.setUserVisibleHint(f, false);
 						mFragments.set(index, f);
 					} else {
 						Log.w(TAG, "Bad fragment at key " + key);
 					}
-					
 				}
 			}
 		}
@@ -326,6 +357,13 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		super.setPrimaryItem(container, position, object);
 	}
 	
+	/**
+	 * Returns the absolute position of object, or {@link #POSITION_NONE} if the reported position
+	 * of the object as returned by {@link #getItemPosition(Object)} is {@link #POSITION_NONE}.
+	 * 
+	 * <p>Use {@link #getRelativeItemPosition(Object)} to get the position expected by sub-classes.</p>
+	 * @see #getRelativeItemPosition(Object)
+	 */
 	@Override
 	public int getItemPosition(Object object) {
 		if (object == null) return POSITION_UNCHANGED;
@@ -341,10 +379,15 @@ public abstract class InfiniteFragmentStatePagerAdapter extends InfinitePagerAda
 		} else if (relativeObjectPosition != POSITION_NONE) {
 			// The items position has changed, return the new position
 			returnedPosition = relativeObjectPosition + getMargin();
+			
+			
 		}
 		return returnedPosition;
 	}
 	
+	/**
+	 * @see #instantiateRelativeItem(ViewGroup,int)
+	 */
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
 		final int margin = getMargin();

@@ -248,10 +248,32 @@ public abstract class InfinitePagerAdapter extends PagerAdapter {
 	public void setRelativePrimaryItem(ViewGroup container, int position, Object object) {
 	}
 	
+	/**
+	 * If true, {@link #onPreNotifyDataSetChange()} has been called.
+	 */
+	private boolean preNotifyCalled = false;
+	
+	/**
+	 * Update the count the number of pages in the PagerAdapter.
+	 * 
+	 * <p>Call this method before calling the super method {@link #notifyDataSetChanged()}
+	 * if the implementing class needs an updated value for the number of items or the
+	 * appropriate value of {@link #margin} as returned by {@link #getMargin()}. If this
+	 * method is not called, then the relevant functions will be completed when calling
+	 * the super implementation of {@link #notifyDataSetChanged()}.</p>
+	 */
+	protected void onPreNotifyDataSetChange() {
+		setCount(getRelativeCount());
+		preNotifyCalled = true;
+	}
+	
 	@Override
 	public void notifyDataSetChanged() {
-		setCount(getRelativeCount());
+		if (!preNotifyCalled) {
+			onPreNotifyDataSetChange();
+		}
 		super.notifyDataSetChanged();
+		preNotifyCalled = false;
 	}
 	
 	/**
@@ -266,7 +288,7 @@ public abstract class InfinitePagerAdapter extends PagerAdapter {
 	public int getCount() {
 		if (mCount <= 0) {
 			setCount(getRelativeCount());
-			notifyDataSetChanged();
+		//	notifyDataSetChanged();
 		}
 		
 		return mCount + (margin*2);
@@ -323,9 +345,6 @@ public abstract class InfinitePagerAdapter extends PagerAdapter {
 		if (attachedToInfiniteViewPager == NOT_SET) {
 			attachedToInfiniteViewPager = container instanceof InfiniteViewPager ? INFINITE_ADAPTER : NORMAL_ADAPTER ;
 			setCount(mCount);
-			// The internal count may change, this can upset the ViewPager.
-			// Alert the ViewPager there may be less pages than before.
-			notifyDataSetChanged();
 		}
 		if (position == mCount + margin || position == margin) {
 			// Page is first page
