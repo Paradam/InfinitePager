@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical" >
+    <com.github.paradam.infinitepager.InfiniteViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.ListFragment" >
+    </com.github.paradam.infinitepager.InfiniteViewPager>
+
+    <android.support.v4.view.SlidingTabLayout xmlns:cust="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pagerTabStrip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/fragment_background"
+
+        cust:viewPager="@id/viewPager"
+        cust:autoHide="hide_auto"
+
+        cust:selectorColors="@array/colors"
+        cust:dividerColors="@array/colors"/>
+</RelativeLayout>
+

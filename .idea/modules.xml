@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/InfinitePager/InfinitePager.iml" filepath="$PROJECT_DIR$/InfinitePager/InfinitePager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/InfinitePager-demo/InfinitePager-demo.iml" filepath="$PROJECT_DIR$/InfinitePager-demo/InfinitePager-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/InfinitePager-project.iml" filepath="$PROJECT_DIR$/InfinitePager-project.iml" />
+    </modules>
+  </component>
+</project>
+

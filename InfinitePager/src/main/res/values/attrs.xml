@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SlidingTabStrip">
+        <!-- Attach the SlidingTabStrip to the ViewPager with the id set.
+             This can be handy when the ViewPager is not the parent of the SlidingTabStrip, however
+             the SlidingTabStrip must be within the same parent as the ViewPager. -->
+        <attr name="viewPager" format="reference" />
+
+        <!-- Set how the SlidingTabStrip displays, this will allow the tabs to be hidable or not.
+             Default is 'hide_none' -->
+        <attr name="autoHide"  format="enum">
+
+            <!-- When set to 'hide_none', the tabs will not be hidable and trying to hide them will
+                 be ignored. -->
+            <enum name="hide_none" value="0" />
+
+            <!-- When set to 'hide_auto', the tabs will show and hide automatically as the ViewPager
+                 moves. The tabs can also be shown and hidden by calling either
+                 SlidingTabStrip#slideIn(long) or SlidingTabStrip#slideOut(long) -->
+            <enum name="hide_auto" value="1" />
+
+            <!-- When set to 'hide_program', the tabs will only be shown or hidden by calling
+                 SlidingTabStrip#slideIn(long) or SlidingTabStrip#slideOut(long) respectively. The
+                 initial state of the tabs will be visible. -->
+            <enum name="hide_program" value="2" />
+        </attr>
+
+        <!-- The duration the tabs will remain visible until they are hidden. This attribute only
+             has an effect if 'autoHide' is set to 'hide_auto' or will be ignored otherwise. -->
+        <attr name="displayDuration" format="integer" />
+
+        <!-- Set all dividers shown to the colour set. -->
+        <attr name="dividerColor" format="color" />
+
+        <!-- Set the selector bar to be the same colour for each tab. -->
+        <attr name="selectorColor" format="color" />
+
+        <!-- Loop through the array of colours, with each divider being a different colour. If there
+             are more dividers than colours, the colour used will begin back at the start of the array
+             and continue from there. This is the same as using SlidingTabLayout#setDividerColors(Color...) -->
+        <attr name="dividerColors" format="reference" />
+
+        <!-- Loop through the array of colours, with each tab having a different bar colour. If there
+             are more tabs than colours, the colour used will begin back at the start of the array
+             and continue from there. This is the same as using SlidingTabLayout#setSelectedIndicatorColors(Color...) -->
+        <attr name="selectorColors" format="reference" />
+    </declare-styleable>
+</resources>

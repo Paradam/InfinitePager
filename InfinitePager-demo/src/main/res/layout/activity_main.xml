@@ -1,0 +1,20 @@
+<com.github.paradam.infinitepager.InfiniteViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/viewPager"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".fragment.ListFragment" >
+
+	<android.support.v4.view.SlidingTabLayout xmlns:cust="http://schemas.android.com/apk/res-auto"
+		android:id="@+id/pagerTabStrip"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+
+        cust:selectorColor="@color/red"
+        cust:dividerColor="@color/red"
+
+        cust:selectorColors="@array/colors"
+        cust:dividerColors="@array/colors"/>
+
+</com.github.paradam.infinitepager.InfiniteViewPager>
